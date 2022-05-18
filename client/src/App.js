@@ -14,7 +14,6 @@ function App() {
   let intervalID;
 
   const getBalance = async (address) => {
-    console.log("triggered");
     const response = await axios.get(`${server}/balance/${address}`);
     const balance = ethers.utils.formatEther(response.data.balance.hex);
     return balance;
@@ -43,7 +42,6 @@ function App() {
   }
 
   const changeNetwork = async (network) => {
-    console.log(network);
       await axios.get(`${server}/change-network/${network}`);
   };
 

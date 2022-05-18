@@ -19,7 +19,7 @@ const Balance = (props) => {
   return (
     <Box display="flex" flexDirection="column" width="60%" py="5">
       <Input
-        width={"auto"}
+        width="auto"
         type="text"
         id="address"
         value={address}

@@ -4,7 +4,7 @@ import Balance from "./Balance";
 import Blocks from "./Blocks";
 import React, {useState} from 'react';
 import { Container } from '@chakra-ui/react';
-import Header from "./Header";
+import NetworkSelect from "./NetworkSelect";
 const ethers = require("ethers");
 
 const server = "http://localhost:3300";
@@ -49,7 +49,7 @@ function App() {
 
   return (
     <Container centerContent maxW="lg">
-      <Header changeNetwork={changeNetwork} />
+      <NetworkSelect changeNetwork={changeNetwork} />
       <Balance getBalance={getBalance}/>
       <Blocks blocks={blocks} pollBlocks={pollBlocks} stopPollingBlocks={stopPollingBlocks} />
     </Container>

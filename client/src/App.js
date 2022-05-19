@@ -1,9 +1,12 @@
 import "./App.css";
 import axios from "axios";
-import Balance from "./Balance";
+import Searchbar from "./Searchbar";
 import Blocks from "./Blocks";
-import React, {useState} from 'react';
-import { Container } from '@chakra-ui/react';
+import React, { useState, useEffect } from "react";
+import {
+  Container,
+  HStack,
+} from "@chakra-ui/react";
 import NetworkSelect from "./NetworkSelect";
 const ethers = require("ethers");
 
@@ -11,7 +14,11 @@ const server = "http://localhost:3300";
 
 function App() {
   const [blocks, setBlocks] = useState([]);
-  let intervalID;
+
+  useEffect(() => {
+    let intervalId = setInterval(getBlock, 25000);
+    return () => clearInterval(intervalId);
+  }, []);
 
   const getBalance = async (address) => {
     const response = await axios.get(`${server}/balance/${address}`);
@@ -22,36 +29,20 @@ function App() {
   const getBlock = async () => {
     console.log("getting block");
     const block = await axios.get(`${server}/block`);
-    setBlocks([...blocks, block.data]);
-    console.log(blocks);
+    setBlocks((prevState) => [block.data, ...prevState]);
   };
-
-  const pollBlocks = () => {
-    console.log("Start polling...");
-    intervalID = setInterval(getBlock, 30000);
-    console.log(intervalID);
-  };
-
-  const stopPollingBlocks = () => {
-    console.log("Stopping polling.");
-    // intervalID = clearInterval(intervalID);
-    for (let i = 1; i <= intervalID; i++) {
-      clearInterval(i);
-      console.log("cleared interval " + i)
-    }
-  }
 
   const changeNetwork = async (network) => {
-      await axios.get(`${server}/change-network/${network}`);
+    await axios.get(`${server}/change-network/${network}`);
   };
-
-  // pollBlocks();
 
   return (
     <Container centerContent maxW="lg">
-      <NetworkSelect changeNetwork={changeNetwork} />
-      <Balance getBalance={getBalance}/>
-      <Blocks blocks={blocks} pollBlocks={pollBlocks} stopPollingBlocks={stopPollingBlocks} />
+      <HStack>
+        <NetworkSelect changeNetwork={changeNetwork} />
+        <Searchbar getBalance={getBalance} />
+      </HStack>
+      <Blocks blocks={blocks} />
     </Container>
   );
 }

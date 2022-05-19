@@ -12,8 +12,6 @@ const NetworkSelect = (props) => {
   };
 
   return (
-    <Box display="flex" align-content="space-between">
-      <h1>Block Explorer</h1>
       <Select>
             <option value="Mainnet" onClick={() => select("Mainnet")}>
               Mainnet
@@ -25,7 +23,6 @@ const NetworkSelect = (props) => {
               Ropsten
             </option>
       </Select>
-    </Box>
   );
 };
 

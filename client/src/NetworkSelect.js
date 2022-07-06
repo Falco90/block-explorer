@@ -1,28 +1,25 @@
 import React from "react";
-import {
-  Box,
-  Select
-} from "@chakra-ui/react";
+import { Box, Select, option } from "@chakra-ui/react";
+import axios from "axios";
 
-const NetworkSelect = (props) => {
-  const { changeNetwork } = props;
+const server = "http://localhost:3300";
 
-  const select = (network) => {
-    changeNetwork(network);
+const NetworkSelect = () => {
+  const changeNetwork = async (network) => {
+    console.log(network);
+    await axios.get(`${server}/change-network/${network}`);
   };
 
   return (
-      <Select>
-            <option value="Mainnet" onClick={() => select("Mainnet")}>
-              Mainnet
-            </option>
-            <option value="Rinkeby" onClick={() => select("Rinkeby")}>
-              Rinkeby
-            </option>
-            <option value="Ropsten" onClick={() => select("Ropsten")}>
-              Ropsten
-            </option>
-      </Select>
+    <Select width={150}
+      onChange={(e) => {
+        changeNetwork(e.target.value);
+      }}
+    >
+      <option value="Mainnet">Mainnet</option>
+      <option value="Rinkeby">Rinkeby</option>
+      <option value="Ropsten">Ropsten</option>
+    </Select>
   );
 };
 

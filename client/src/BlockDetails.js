@@ -7,50 +7,76 @@ import {
   Th,
   Td,
   TableContainer,
-  Tag,
-  Button
+  Box,
+  Button,
+  Flex,
 } from "@chakra-ui/react";
-import {ViewIcon} from "@chakra-ui/icons";
+import { ViewIcon, ArrowBackIcon } from "@chakra-ui/icons";
+import { useLocation, Link } from "react-router-dom";
 
-const BlockDetails = (props) => {
-  const { selectedBlock } = props;
+const BlockDetails = () => {
+  const location = useLocation();
+  const { block } = location.state;
+
   return (
-    <TableContainer>
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>Block #{selectedBlock.number}</Th>
-            <Th></Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          <Tr>
-            <Td>Hash:</Td>
-            <Td>{selectedBlock.hash}</Td>
-          </Tr>
-          <Tr>
-            <Td>Miner:</Td>
-            <Td>{selectedBlock.miner}</Td>
-          </Tr>
-          <Tr>
-            <Td>Transactions:</Td>
-            <Td>
-              {selectedBlock.transactions
-                ? <Button size="sm" rightIcon={<ViewIcon />}>{selectedBlock.transactions.length} transactions </Button>
-                : ""}
-            </Td>
-          </Tr>
-          <Tr>
-            <Td>Nonce:</Td>
-            <Td>{selectedBlock.nonce}</Td>
-          </Tr>
-          <Tr>
-            <Td>ParentHash:</Td>
-            <Td>{selectedBlock.parentHash}</Td>
-          </Tr>
-        </Tbody>
-      </Table>
-    </TableContainer>
+    <Box>
+      <TableContainer>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Block Details</Th>
+              <Th></Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            <Tr>
+              <Td>Number:</Td>
+              <Td>{block.number}</Td>
+            </Tr>
+            <Tr>
+              <Td>Hash:</Td>
+              <Td>{block.hash}</Td>
+            </Tr>
+            <Tr>
+              <Td>Miner:</Td>
+              <Td>{block.miner}</Td>
+            </Tr>
+            <Tr>
+              <Td>Transactions:</Td>
+              <Td>
+                {block.transactions ? (
+                  <Link
+                    to={"/blocks/" + block.number + "/transactions"}
+                    state={{ block: block }}
+                  >
+                    <Button size="sm" rightIcon={<ViewIcon />}>
+                      {block.transactions.length} transactions{" "}
+                    </Button>
+                  </Link>
+                ) : (
+                  ""
+                )}
+              </Td>
+            </Tr>
+            <Tr>
+              <Td>Nonce:</Td>
+              <Td>{block.nonce}</Td>
+            </Tr>
+            <Tr>
+              <Td>ParentHash:</Td>
+              <Td>{block.parentHash}</Td>
+            </Tr>
+          </Tbody>
+        </Table>
+      </TableContainer>
+      <Flex>
+        <Link to={"/"}>
+          <Button mt={5} size="sm" leftIcon={<ArrowBackIcon />}>
+            Back
+          </Button>
+        </Link>
+      </Flex>
+    </Box>
   );
 };
 

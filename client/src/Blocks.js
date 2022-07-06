@@ -1,40 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Button,
-  Box,
-  Flex
+  Flex,
+  Spinner,
 } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 import truncate from "./utils/utils";
-import BlockDetails from "./BlockDetails";
 
-const Blocks = (props) => {
-  const { blocks } = props;
-  const [selectedBlock, setSelectedBlock] = useState({});
+const server = "http://localhost:3300";
 
-  const selectBlock = (block) => {
-    console.log(block);
-    setSelectedBlock(block);
+const Blocks = () => {
+  const [blocks, setBlocks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    getBlocks();
+    let intervalId = setInterval(getBlocks, 5000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const getBlocks = async () => {
+    const latestBlocks = await axios.get(`${server}/block`);
+    setBlocks(latestBlocks.data);
+    setIsLoading(false);
   };
 
   return (
     <Flex>
-      <BlockDetails selectedBlock={selectedBlock}></BlockDetails>
-      <TableContainer overflowY="auto" maxH="400px" px={5} maxW={500}>
+            {isLoading ? (
+        <Flex direction="column" mt={20}>
+          <p>Loading...</p>
+          <Spinner
+            thickness="4px"
+            speed="0.95s"
+            color="white.500"
+            size="lg"
+            mt={10}
+            alignSelf="center"
+          />
+        </Flex>
+      ) : (
+      <TableContainer overflowY="auto" height={600} px={5} maxW={600}>
         <Table variant="simple">
           <Thead>
             <Tr>
               <Th>Latest Blocks</Th>
               <Th></Th>
-              <Th></Th>
+              <Th>
+                <Spinner
+                  thickness="4px"
+                  speed="0.95s"
+                  color="white.500"
+                  size="sm"
+                  float="right"
+                />
+              </Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -45,9 +74,12 @@ const Blocks = (props) => {
                       <Td>{block.number}</Td>
                       <Td>{truncate(block.hash)}</Td>
                       <Td>
-                        <Button size="sm" onClick={() => selectBlock(block)}>
-                          Inspect
-                        </Button>
+                        <Link
+                          to={"blocks/" + block.number}
+                          state={{ block: block }}
+                        >
+                          <Button size="sm">Inspect</Button>
+                        </Link>
                       </Td>
                     </Tr>
                   );
@@ -56,7 +88,8 @@ const Blocks = (props) => {
           </Tbody>
         </Table>
       </TableContainer>
-      </Flex>
+      )}
+    </Flex>
   );
 };
 
